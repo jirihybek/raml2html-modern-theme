@@ -1,0 +1,367 @@
+{% macro paramsHeader() %}
+	<thead class="table__head">
+		<tr>
+			<th class="table__col--name">Parameter</th>
+			<th class="table__col--type">Type</th>
+			<th class="table__col--description">Description</th>
+		</tr>
+	</thead>
+{% endmacro %}
+
+{% macro paramsHeading(title) %}
+	<thead class="table__heading">
+		<tr>
+			<th class="table__col--title" colspan="3">{{ title }}</th>
+		</tr>
+	</thead>
+{% endmacro %}
+
+{% macro propertyInfo(prop, typesRegistry) %}
+	{% if prop.description %}
+		<div class="property__description rtc rtc--final">
+			{% markdown %}
+			{{ prop.description }}
+			{% endmarkdown %}
+		</div>
+	{% endif %}
+
+	{% if prop.minProperties %}
+		<p class="property__attr">
+			<span class="property__attr__label">Min. properties:</span>
+			<span class="property__attr__val">{{ prop.minProperties }}</span>
+		</p>
+	{% endif %}
+	
+	{% if prop.maxProperties %}
+		<p class="property__attr">
+			<span class="property__attr__label">Max. properties:</span>
+			<span class="property__attr__val">{{ prop.maxProperties }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.additionalProperties %}
+		<p class="property__attr">
+			<span class="property__attr__label">Additional properties:</span>
+			<span class="property__attr__val">Yes</span>
+		</p>
+	{% endif %}
+
+	{% if prop.discriminator %}
+		<p class="property__attr">
+			<span class="property__attr__label">Discriminator:</span>
+			<span class="property__attr__val">{{ prop.discriminator }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.discriminatorValue %}
+		<p class="property__attr">
+			<span class="property__attr__label">Discriminator value:</span>
+			<span class="property__attr__val">{{ prop.discriminatorValue }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.uniqueItems %}
+		<p class="property__attr">
+			<span class="property__attr__label">Unique items:</span>
+			<span class="property__attr__val">Yes</span>
+		</p>
+	{% endif %}
+
+	{% if prop.maxItems %}
+		<p class="property__attr">
+			<span class="property__attr__label">Max. items:</span>
+			<span class="property__attr__val">{{ prop.maxItems }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.pattern %}
+		<p class="property__attr">
+			<span class="property__attr__label">Pattern:</span>
+			<span class="property__attr__val property__attr__val--pre">{{ prop.pattern }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.minLength %}
+		<p class="property__attr">
+			<span class="property__attr__label">Min. length:</span>
+			<span class="property__attr__val">{{ prop.minLength }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.maxLength %}
+		<p class="property__attr">
+			<span class="property__attr__label">Max. length:</span>
+			<span class="property__attr__val">{{ prop.maxLength }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.minimum %}
+		<p class="property__attr">
+			<span class="property__attr__label">Min. value:</span>
+			<span class="property__attr__val">{{ prop.minimum }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.maximum %}
+		<p class="property__attr">
+			<span class="property__attr__label">Max. value:</span>
+			<span class="property__attr__val">{{ prop.maximum }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.format %}
+		<p class="property__attr">
+			<span class="property__attr__label">Format:</span>
+			<span class="property__attr__val">{{ prop.format }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.multipleOf %}
+		<p class="property__attr">
+			<span class="property__attr__label">Multiple of:</span>
+			<span class="property__attr__val">{{ prop.multipleOf }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.fileTypes %}
+		<div class="property__attr">
+			<span class="property__attr__label">File types:</span> 
+			<ul class="property__attr__val property__attr__val--list">
+				{% for fileType in prop.fileTypes %}
+					<li class="property__attr__val">{{ fileType }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+
+	{% if prop.default %}
+		<p class="property__attr">
+			<span class="property__attr__label">Default value:</span>
+			<span class="property__attr__val property__attr__val--pre">{{ prop.default | dump }}</span>
+		</p>
+	{% endif %}
+
+	{% if prop.enum %}
+		<div class="property__attr">
+			<span class="property__attr__label">Enum:</span> 
+			<ul class="property__attr__val property__attr__val--list">
+				{% for enumItem in prop.enum %}
+					<li class="property__attr__val property__attr__val--pre">{{ enumItem }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+
+	{% if prop.originalType %}
+		<p class="property__attr">
+			<span class="property__attr__label">Inherits:</span>
+			<span class="property__attr__val">
+				{% if typesRegistry[prop.originalType] %}
+					<a href="#type:{{ prop.originalType }}">{{ prop.originalType }}</a>
+				{% else %}
+					{{ prop.originalType }}
+				{% endif %}
+			</span>
+		</p>
+	{% endif %}
+{% endmacro %}
+
+{% macro paramsProperty(key, prop, prefix, isArrayItem, typesRegistry) %}
+	<!-- <tr><td colspan="3"><pre><code>{{prefix}}: {{ prop | dump }}</code></pre></td></tr> -->
+	<tr class="property">
+
+		<th class="table__col--name">
+			<span class="property__prefix">{{ prefix }}</span><span class="property__name">{%- if isArrayItem -%}[]{%- else -%}{{ prop.name }}{%- endif -%}</span>
+			{%- if prop.required -%}<span class="property__required">*</span>{%- endif -%}
+			{% if prop.displayName and prop.displayName !== prop.name %}<span class="property__display-name">{{ prop.displayName }}</span>{% endif %}
+		</th>
+		<td class="table__col--type">{{ prop.type }}</td>
+		<td class="table__col--description property__info">
+			{{ propertyInfo(prop, typesRegistry) }}
+		</td>
+	</tr>
+
+	{{ typeProperties(prop, prefix + ( "[]" if isArrayItem else prop.name ), ".", typesRegistry) }}
+{% endmacro %}
+
+{% macro typeProperties(type, prefix, suffix, typesRegistry) %}
+	{% if type.properties.length %}
+		{% for prop in type.properties %}
+			{{ paramsProperty(null, prop, prefix + suffix, false, typesRegistry) }}
+		{% endfor %}
+	{% elif type.properties %}
+		{% for key, prop in type.properties %}
+			{{ paramsProperty(key, prop, prefix + suffix, false, typesRegistry) }}
+		{% endfor %}
+	{% endif %}
+
+	{% if type.items %}
+		{{ paramsProperty(null, type.items, prefix, true, typesRegistry) }}
+	{% endif %}
+
+	{% if type.anyOf %}
+		<tr class="table__row--heading property">
+
+			<th class="table__col--name">
+				<span class="property__prefix">{{ prefix }}</span>
+			</th>
+			<td class="table__col--type">anyOf</td>
+			<td class="table__col--description property__info">
+				<div class="property__description">Any of the following types.</div>
+			</td>
+		</tr>
+
+		{% for subType in type.anyOf %}
+			<tr class="table__row--top-separated property">
+
+				<th class="table__col--name">
+					<span class="property__prefix">{{ prefix }}</span><span class="property__anyof-type">{{ "{" }}{{subType.name}}{{ "}" }}</span>
+					{% if subType.displayName and subType.displayName !== subType.name %}<span class="property__display-name">{{ subType.displayName }}</span>{% endif %}
+				</th>
+				<td class="table__col--type">{{ subType.type }}</td>
+				<td class="table__col--description property__info">
+					{{ propertyInfo(subType, typesRegistry) }}
+				</td>
+			</tr>
+
+			{{ typeProperties(subType, prefix + "{" + subType.name + "}.", suffix, typesRegistry) }}
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+
+{% macro paramsBody(params, typesRegistry) %}
+	<tbody class="table__body table__body--params">
+		{{ typeProperties({ properties: params }, "", "", typesRegistry) }}
+	</tbody>
+{% endmacro %}
+
+{% macro typeBody(type, typesRegistry) %}
+	<tbody class="table__body table__body--type">
+		{{ typeProperties(type, "", "", typesRegistry) }}
+	</tbody>
+{% endmacro %}
+
+{% macro paramsSidecode(params, id, label) %}
+	{% if params.examples.length %}
+		<div class="container--inner">
+			{% if label %}<h3 class="sidecode__title">{{ label }}</h3>{% endif %}
+			{% for example in params.examples %}
+                {% if example.displayName %}
+                    <h4 class="sidecode__subtitle{% if not example.description %} sidecode__space--small{% endif %}">{{ example.displayName }}</h4>
+                {% endif %}
+                {% if example.description %}
+                    <p class="sidecode__description {% if example.displayName %} sidecode__space--small{% endif %}">{{ example.description }}</p>
+                {% endif %}
+				<pre class="code-example"><code class="hljs json">{{ example.value | escape }}</code></pre>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro typeSection(type, id, sidecodeLabel, typesRegistry) %}
+	<div class="section type">
+		<div class="section__content container--inner">
+			<header class="type__header {% if type.description %}type__header--with-description{% endif %}">
+				<h4 class="type__title">
+					{% if typesRegistry and typesRegistry[type.name] %}<a href="#type:{{ type.name }}">{% endif %}
+					{% if type.displayName %}
+					<span class="type__display-name">{{ type.displayName }}</span>
+					{% endif %}
+					{% if type.name and type.name != type.key %}
+					<span class="type__name">{{ type.name }}</span>
+					{% endif %}
+					{% if typesRegistry and typesRegistry[type.name] %}</a>{% endif %}
+				</h4>
+				<p class="type__key">{{ type.key }}</p>
+			</header>
+
+			<div class="type__description property property__info">
+				{{ propertyInfo(type, typesRegistry) }}
+			</div>
+
+			{% if type.properties or type.items or type.anyOf %}
+			<table class="table">
+				{{ paramsHeader() }}
+				{{ typeBody(type, typesRegistry) }}
+			</table>
+			{% endif %}
+		</div>
+		<div class="section__sidecode">
+			<div class="type__sidecode">
+				{{ paramsSidecode(type, resourceAnchor, sidecodeLabel) }}
+			</div>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro collapsibleArrows() %}
+	<i title="Expand" class="material-icons collapsible--when-collapsed">chevron_right</i>
+	<i title="Collapse" class="material-icons collapsible--when-not-collapsed">expand_more</i>
+{% endmacro %}
+
+{% macro structuredValue(value) %}
+	{% if value | string == "[object Object]" %}
+		<ul class="structured-value structured-value--object">
+		{% for key, val in value %}
+			<li class="structured-value__property">
+				<span class="structured-value__key">{{ key }}:</span>
+				{{ structuredValue(val) }}
+			</li>
+		{% endfor %}
+		</ul>
+	{% elif value | string !== value and value.length %}
+		<ul class="structured-value structured-value--array">
+			{% for item in value %}
+				<li class="structured-value__array-item">{{ structuredValue(item) }}</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<span class="structured-value structured-value--value">{{ value }}</span>
+	{% endif %}
+{% endmacro %}
+
+{% macro curlHeaders(headers) %}
+{% for item in headers %}
+  {% if item.examples and item.examples.length %}-H "{{ item.name }}: {{ item.examples[0].value }}"{% else %}-H "{{ item.name }}: &lt;value&gt;"{% endif %} \{% endfor %}
+{% endmacro %}
+
+{% macro curlQuerySingleParam(param, delimiter, prefix, isKey, isArrayItem) %}
+	{%- if isArrayItem -%}
+		{%- set itemKey = "[]" -%}
+	{%- else -%}
+		{%- set itemKey = ( "[" if isKey else "" ) + (param.name | urlencode) + ( "]" if isKey else "" ) -%}
+	{%- endif -%}
+	{%- if param.type == "array" and param.items -%}
+		{{ curlQuerySingleParam(param.items, delimiter, prefix + itemKey, true, true) }}
+	{%- elif param.type == "object" and param.properties -%}
+		{{ curlQueryParams(param.properties, delimiter, prefix + itemKey, true) }}
+	{%- else -%}
+		{{ delimiter }}{{ prefix }}{{ itemKey }}={{ (param.example | urlencode) if param.example else "&lt;value&gt;" }}
+	{%- endif -%}
+{% endmacro %}
+
+{% macro curlQueryParams(queryParams, delimiter, prefix, isKey) %}
+	{%- if queryParams.length -%}
+		{%- for param in queryParams -%}
+			{{ curlQuerySingleParam(param, "?" if delimiter == "?" and loop.first else "&", prefix, isKey) | trim }}
+		{%- endfor -%}
+	{%- elif queryParams -%}
+		{%- for key, param in queryParams -%}
+			{{ curlQuerySingleParam(param, "?" if delimiter == "?" and loop.first else "&", prefix, isKey) | trim }}
+		{%- endfor -%}
+	{%- endif -%}
+{% endmacro %}
+
+{% macro curlCommand(resource, method, baseUri) %}
+curl -X {{ method.method | upper }} \{% if method.headers.length %}
+  {{ curlHeaders(method.headers) | trim }}{% endif %}{% if method.body and method.body.length %}
+  -H "Content-type: {{ method.body[0].key }}"
+  -d @{% if method.body[0].key == "application/json" %}body.json{% elif(method.body[0].key == "application/xml") %}body.xml{% else %}file{% endif %} \{% endif %}
+  {{ baseUri + resource.parentUrl + resource.relativeUri }}{% if method.queryParameters %}{{ curlQueryParams(method.queryParameters, "?", "") | trim }}{% endif %}
+{% endmacro %}
+
+{% macro curlSecurityScheme(secScheme, baseUri) %}
+curl -X &lt;method&gt; \{% if secScheme.describedBy.headers.length %}
+  {{ curlHeaders(secScheme.describedBy.headers) | trim }}{% endif %}
+  {{ baseUri }}/&lt;path&gt;{% if secScheme.describedBy.queryParameters %}{{ curlQueryParams(secScheme.describedBy.queryParameters, "?", "") | trim }}{% endif %}
+{% endmacro %}

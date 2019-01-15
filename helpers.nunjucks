@@ -1,0 +1,71 @@
+{% macro httpCodeLabel(code) %}
+	{% if code == 100 %} <span class="status-code status-code--1xx">100 Continue</span>
+	{% elif code == 101 %} <span class="status-code status-code--1xx">101 Switching Protocols</span>
+	{% elif code == 102 %} <span class="status-code status-code--1xx">102 Processing</span>
+	{% elif code == 103 %} <span class="status-code status-code--1xx">103 Early Hints</span>
+
+	{% elif code == 200 %} <span class="status-code status-code--2xx">200 OK</span>
+	{% elif code == 201 %} <span class="status-code status-code--2xx">201 Created</span>
+	{% elif code == 202 %} <span class="status-code status-code--2xx">202 Accepted</span>
+	{% elif code == 203 %} <span class="status-code status-code--2xx">203 Non-Authoritative Information</span>
+	{% elif code == 204 %} <span class="status-code status-code--2xx">204 No Content</span>
+	{% elif code == 205 %} <span class="status-code status-code--2xx">205 Reset Content</span>
+	{% elif code == 206 %} <span class="status-code status-code--2xx">206 Partial Content</span>
+	{% elif code == 207 %} <span class="status-code status-code--2xx">207 Multi-Status</span>
+	{% elif code == 208 %} <span class="status-code status-code--2xx">208 Already Reported</span>
+	{% elif code == 226 %} <span class="status-code status-code--2xx">226 IM Used</span>
+
+	{% elif code == 300 %} <span class="status-code status-code--3xx">300 Multiple Choices</span>
+	{% elif code == 301 %} <span class="status-code status-code--3xx">301 Moved Permanently</span>
+	{% elif code == 302 %} <span class="status-code status-code--3xx">302 Found</span>
+	{% elif code == 303 %} <span class="status-code status-code--3xx">303 See Other</span>
+	{% elif code == 304 %} <span class="status-code status-code--3xx">304 Not Modified</span>
+	{% elif code == 305 %} <span class="status-code status-code--3xx">305 Use Proxy</span>
+	{% elif code == 306 %} <span class="status-code status-code--3xx">306 Switch Proxy</span>
+	{% elif code == 307 %} <span class="status-code status-code--3xx">307 Temporary Redirect</span>
+	{% elif code == 308 %} <span class="status-code status-code--3xx">308 Permanent Redirect</span>
+
+	{% elif code == 400 %} <span class="status-code status-code--4xx">400 Bad Request</span>
+	{% elif code == 401 %} <span class="status-code status-code--4xx">401 Unauthorized</span>
+	{% elif code == 402 %} <span class="status-code status-code--4xx">402 Payment Required</span>
+	{% elif code == 403 %} <span class="status-code status-code--4xx">403 Forbidden</span>
+	{% elif code == 404 %} <span class="status-code status-code--4xx">404 Not Found</span>
+	{% elif code == 405 %} <span class="status-code status-code--4xx">405 Method Not Allowed</span>
+	{% elif code == 406 %} <span class="status-code status-code--4xx">406 Not Acceptable</span>
+	{% elif code == 407 %} <span class="status-code status-code--4xx">407 Proxy Authentication Required</span>
+	{% elif code == 408 %} <span class="status-code status-code--4xx">408 Request Timeout</span>
+	{% elif code == 409 %} <span class="status-code status-code--4xx">409 Conflict</span>
+	{% elif code == 410 %} <span class="status-code status-code--4xx">410 Gone</span>
+	{% elif code == 411 %} <span class="status-code status-code--4xx">411 Length Required</span>
+	{% elif code == 412 %} <span class="status-code status-code--4xx">412 Precondition Failed</span>
+	{% elif code == 413 %} <span class="status-code status-code--4xx">413 Payload Too Large</span>
+	{% elif code == 414 %} <span class="status-code status-code--4xx">414 URI Too Long</span>
+	{% elif code == 415 %} <span class="status-code status-code--4xx">415 Unsupported Media Type</span>
+	{% elif code == 416 %} <span class="status-code status-code--4xx">416 Range Not Satisfiable</span>
+	{% elif code == 417 %} <span class="status-code status-code--4xx">417 Expectation Failed</span>
+	{% elif code == 418 %} <span class="status-code status-code--4xx">418 I'm a teapot</span>
+	{% elif code == 421 %} <span class="status-code status-code--4xx">421 Misdirected Request</span>
+	{% elif code == 422 %} <span class="status-code status-code--4xx">422 Unprocessable Entity</span>
+	{% elif code == 423 %} <span class="status-code status-code--4xx">423 Locked</span>
+	{% elif code == 424 %} <span class="status-code status-code--4xx">424 Failed Dependency</span>
+	{% elif code == 426 %} <span class="status-code status-code--4xx">426 Upgrade Required</span>
+	{% elif code == 428 %} <span class="status-code status-code--4xx">428 Precondition Required</span>
+	{% elif code == 429 %} <span class="status-code status-code--4xx">429 Too Many Requests</span>
+	{% elif code == 431 %} <span class="status-code status-code--4xx">431 Request Header Fields Too Large</span>
+	{% elif code == 451 %} <span class="status-code status-code--4xx">451 Unavailable For Legal Reasons</span>
+
+	{% elif code == 500 %} <span class="status-code status-code--5xx">500 Internal Server Error</span>
+	{% elif code == 501 %} <span class="status-code status-code--5xx">501 Not Implemented</span>
+	{% elif code == 502 %} <span class="status-code status-code--5xx">502 Bad Gateway</span>
+	{% elif code == 503 %} <span class="status-code status-code--5xx">503 Service Unavailable</span>
+	{% elif code == 504 %} <span class="status-code status-code--5xx">504 Gateway Timeout</span>
+	{% elif code == 505 %} <span class="status-code status-code--5xx">505 HTTP Version Not Supported</span>
+	{% elif code == 506 %} <span class="status-code status-code--5xx">506 Variant Also Negotiates</span>
+	{% elif code == 507 %} <span class="status-code status-code--5xx">507 Insufficient Storage</span>
+	{% elif code == 508 %} <span class="status-code status-code--5xx">508 Loop Detected</span>
+	{% elif code == 510 %} <span class="status-code status-code--5xx">510 Not Extended</span>
+	{% elif code == 511 %} <span class="status-code status-code--5xx">511 Network Authentication Required</span>
+
+	{% else %} <span class="status-code">{{code}}</span>
+	{% endif %}
+{% endmacro %}

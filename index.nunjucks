@@ -1,0 +1,135 @@
+{% import "partials.nunjucks" as partials %}
+{% import "helpers.nunjucks" as helpers %}
+<!doctype html>
+<html>
+	<head>
+		<title>{{ title }} - API documentation</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="https://github.com/raml2html/raml2html {{ config.raml2HtmlVersion }}">
+
+		<link href="https://fonts.googleapis.com/css?family=Fira+Sans:300,400,500,700&amp;subset=latin-ext" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700&amp;subset=latin-ext" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/vs2015.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+
+		<!-- <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&amp;subset=latin-ext" rel="stylesheet"> -->
+		<!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin-ext" rel="stylesheet"> -->
+		<!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;subset=latin-ext" rel="stylesheet"> -->
+		<!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&amp;subset=latin-ext" rel="stylesheet"> -->
+
+		<style>
+			{% include "dist/style.css" %}
+		</style>
+
+		<script type="text/javascript">
+			hljs.initHighlightingOnLoad();
+
+			{% include "script.js" %}
+		</script>
+	</head>
+	<body id="top">
+		<!-- navigation -->
+		<div class="sidebar">
+			<div class="sidebar__logo">
+				<p class="sidebar__logo__title">{{ title }}</p>
+				<p class="sidebar__logo__description">API Documentation version <strong>{{ version }}</strong></p>
+			</div>
+			<div class="sidebar__nav">
+				{% include "nav.nunjucks" %}
+			</div>
+		</div>
+
+		<!-- content -->
+		<div class="main-content">
+
+			<!-- intro section -->
+			<article class="section section--separated" id="intro">
+				<div class="section__content container container--content">
+					<div class="rtc rtc--final">
+						<h1 class="rtc__title">{{ title }} <span class="version">v{{ version }}</span></h1>
+
+						{% if description %}
+						<p class="rtc__description">{{ description }}</p>
+						{% endif %}
+
+						<p class="rtc__base-uri">
+							<span class="rtc__base-uri__icon"><i title="URL" class="material-icons">link</i></span>
+							<a class="rtc__base-uri__link" href="{{ baseUri }}" target="_blank">{{ baseUri }}</a>
+						</p>
+					</div>
+
+					{% if baseUriParameters %}
+					<h2 class="rtc__subtitle">Path Parameters</h2>
+
+					<table class="table">
+						{{ partials.paramsHeader() }}
+						{{ partials.paramsBody(baseUriParameters, types) }}
+					</table>
+					{% endif %}
+				</div>
+				<div class="section__sidecode"></div>
+			</article>
+
+			<!-- user documentation -->
+			{% for chapter in documentation %}
+			<article class="section section--separated" id="chapter:{{ chapter.uniqueId }}">
+				<div class="section__content container container--content rtc rtc--final">
+					<h2 class="rtc__title">{{ chapter.title }}</h2>
+					{% markdown %} {{ chapter.content }} {% endmarkdown %}
+				</div>
+				<div class="section__sidecode"></div>
+			</article>
+			{% endfor %}
+
+			<!-- resources -->
+			<section>
+				<header class="section" id="resources">
+					<div class="section__content container container--content rtc rtc--final">
+						<h2 class="rtc__title">Resources</h2>
+					</div>
+					<div class="section__sidecode"></div>
+				</header>
+				{% for resource in resources %}{% include "./resource.nunjucks" %}{% endfor %}
+				<div class="section section--separated">
+					<div class="section__content"></div>
+					<div class="section__sidecode"></div>
+				</div>
+			</section>
+
+			<!-- security schemes -->
+			<section>
+				<header class="section" id="security-schemes">
+					<div class="section__content container container--content rtc rtc--final">
+						<h2 class="rtc__title">Security Schemes</h2>
+					</div>
+					<div class="section__sidecode"></div>
+				</header>
+				{% for secSchemeKey, secScheme in securitySchemes %}
+					{% include "./securityScheme.nunjucks" %}
+				{% endfor %}
+			</section>
+
+			<!-- types -->
+			<section>
+				<header class="section" id="types">
+					<div class="section__content container container--content rtc rtc--final">
+						<h2 class="rtc__title">Types</h2>
+					</div>
+					<div class="section__sidecode"></div>
+				</header>
+				{% for typeKey, type in types %}
+					{% include "./type.nunjucks" %}
+				{% endfor %}
+				<div class="section section--separated">
+					<div class="section__content"></div>
+					<div class="section__sidecode"></div>
+				</div>
+			</section>
+
+		</div>
+	</body>
+</html>

@@ -1,0 +1,3 @@
+[submodule "demo/raml-examples"]
+	path = demo/raml-examples
+	url = https://github.com/raml-org/raml-examples.git

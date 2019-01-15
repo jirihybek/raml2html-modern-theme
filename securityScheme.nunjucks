@@ -1,0 +1,134 @@
+{% set secSchemeAnchor = "security-schemes:" + secSchemeKey %}
+
+<article class="record record--sec-scheme" id="{{ secSchemeAnchor }}">
+	<header class="record__header section">
+		<h3 class="record__header__title section__content">
+			<span class="record__header__method">Security Scheme</span>
+			<span class="record__header__label">
+				<span class="record__header__name">{{ secScheme.name }}</span>
+			</span>
+		</h3>
+		<div class="section__sidecode section__sidecode--heading">
+			<span class="record__header__altname">{% if secScheme.displayName %}{{ secScheme.displayName }}{% endif %}</span>
+		</div>
+	</header>
+
+	<section class="record__content">
+
+		<!-- Common -->
+		<div class="section-group section-group--separated">
+			<div class="section">
+				<div class="section__content container container--inner">
+
+					<!-- <pre><code>{{ type | dump }}</code></pre> -->
+
+					<!-- Description -->
+					{% if secScheme.description %}
+						<div class="content-group">
+							<div class="rtc rtc--final">
+								{% markdown %}
+								{{ secScheme.description}}
+								{% endmarkdown %}
+							</div>
+						</div>
+					{% endif %}
+
+					<!-- Headers -->
+					{% if secScheme.describedBy.headers.length %}
+					<div class="content-group" id="{{ secSchemeAnchor }}:headers">
+						<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ secSchemeAnchor }}:headers">
+							<span class="content-group__title__label">Headers</span>
+							{{ partials.collapsibleArrows() }}
+						</h3>
+						<table class="table collapsible__el">
+							{{ partials.paramsHeader() }}
+							{{ partials.paramsBody(secScheme.describedBy.headers, types) }}
+						</table>
+					</div>
+					{% endif %}
+
+					<!-- Params -->
+					{% if secScheme.describedBy.queryParameters %}
+					<div class="content-group" id="{{ secSchemeAnchor }}:queryParams">
+						<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ secSchemeAnchor }}:queryParams">
+							<span class="content-group__title__label">Query Parameters</span>
+							{{ partials.collapsibleArrows() }}
+						</h3>
+						<table class="table collapsible__el">
+							{{ partials.paramsHeader() }}
+							{{ partials.paramsBody(secScheme.describedBy.queryParameters, types) }}
+						</table>
+					</div>
+					{% endif %}
+
+					<!-- Annotations -->
+					{% if secScheme.annotations.length %}
+					<div class="content-group collapsible--collapsed" id="{{ secSchemeAnchor }}:annotations">
+						<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ typeAnchor }}:annotations">
+							<span class="content-group__title__label">Annotations</span>
+							{{ partials.collapsibleArrows() }}
+						</h3>
+						<ul class="record__annotations collapsible__el">
+							{% for item in secScheme.annotations %}
+								<li class="record__annotations__item">
+									<h3 class="record__annotations__label">
+										{% if annotationTypes[item.key].displayName %}{{ annotationTypes[item.key].displayName }}{% else %}{{ item.name }}{% endif %}{% if item.structuredValue %}:{% endif %}
+									</h3>
+									{% if item.structuredValue %}
+										{{ partials.structuredValue(item.structuredValue) }}
+									{% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+					{% endif %}
+					
+				</div>
+				<div class="section__sidecode">
+					<pre class="container container--inner code-example"><code class="hljs bash">{{ partials.curlSecurityScheme(secScheme, baseUri) | trim }}</code></pre>
+				</div>
+			</div>
+		</div>
+
+		<!-- Responses -->
+		{% if secScheme.describedBy.responses and secScheme.describedBy.responses.length > 0 %}
+			{% for response in secScheme.describedBy.responses %}
+				<div class="section-group section-group--separated record__response collapsible--collapsed" id="{{ secSchemeAnchor }}:response-{{ response.code }}">
+					<div class="section section-group__header">
+						<div class="section__content container--inner">
+							<h3 class="content-group__title content-group__title--sticky collapsible__toggler collapsible__head" data-target="{{ secSchemeAnchor }}:response-{{ response.code }}">
+								<span class="content-group__title__label">{{ helpers.httpCodeLabel(response.code) | trim }}</span>
+								{{ partials.collapsibleArrows() }}
+							</h3>
+							<div class="content-group__description rtc rtc--final content-group__description--last collapsible__el">
+								{% markdown %}
+								{{ response.description }}
+								{% endmarkdown %}
+							</div>
+
+							<div class="collapsible__el">
+							{% if response.headers and response.headers.length %}
+								<h4 class="content-group__subtitle">Headers</h4>
+								<table class="table">
+									{{ partials.paramsHeader() }}
+									{{ partials.paramsBody(response.headers) }}
+								</table>
+							{% endif %}
+							</div>
+						</div>
+						<div class="section__sidecode"></div>
+					</div>
+
+					{% if response.body and response.body.length > 0 %}
+					<div class="section-group__content collapsible__el">
+						{% for contentType in response.body %}
+							{{ partials.typeSection(contentType, resourceAnchor, "Response Body", types) }}
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+			{% endfor %}
+		{% endif %}
+
+	</section>
+</article>

@@ -1,0 +1,93 @@
+{% macro navFinalItem(link, label, level, modifier) %}
+	<li class="nav-tree__item nav-tree__item--final nav-tree__item--level-{{ level }} {% if modifier %}nav-tree__item--{{ modifier }}{% endif %}">
+		<a class="nav-tree__item__label final" href="{{ link }}">
+			<span class="label">{{ label }}</span>
+		</a>
+	</li>
+{% endmacro %}
+
+{% macro navGroupItem(label) %}
+	<div class="nav-tree__item__label nav-tree__item__label--togglable">
+		<i title="Expand" class="material-icons nav-tree__item__label__when-collapsed">chevron_right</i>
+		<i title="Collapse" class="material-icons nav-tree__item__label__when-not-collapsed">expand_more</i>
+		<span class="label">{{ label }}</span>
+	</div>
+{% endmacro %}
+
+{% macro navResource(resource, level) %}
+	{% set expand = false %}
+    {% for item in resource.annotations %}
+		{% if item.key == "expandMenu" %}
+        	{% set expand = true %}
+      	{% endif %}
+    {% endfor %}
+
+	<li class="nav-tree__item nav-tree__item--level-{{ level }} {% if not expand %}nav-tree__item--collapsed{% endif %}">
+		{{ navGroupItem(resource.displayName) }}
+		{% if resource.methods.length or resource.resources.length %}
+		<ul class="nav-tree">
+			{% if resource.methods.length %}
+				{% for method in resource.methods %}
+					{% if method.displayName %}
+						{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.displayName, level + 1, "method-" + method.method) }}
+					{% else %}
+						{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.method | upper, level + 1, "method-" + method.method) }}
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+
+			{% if resource.resources.length %}
+				{% for subResource in resource.resources %}
+					{{ navResource(subResource, level + 1) }}
+				{% endfor %}
+			{% endif %}
+		</ul>
+		{% endif %}
+	</li>
+{% endmacro %}
+
+<!-- intro -->
+<nav class="nav-section">
+	<h2 class="nav-section__title"><a href="#intro">Intro</a></h2>
+	{% if documentation.length %}
+	<ul class="nav-tree">
+		{% for chapter in documentation %}
+			{{ navFinalItem("#chapter:" + chapter.uniqueId, chapter.title, 0) }}
+		{% endfor %}
+	</ul>
+	{% endif %}
+</nav>
+
+<!-- resources -->
+<nav class="nav-section">
+	<h2 class="nav-section__title"><a href="#resources">Resources</a></h2>
+	<ul class="nav-tree">
+		{% for resource in resources %}
+			{{ navResource(resource, 1) }}
+		{% endfor %}
+	</ul>
+</nav>
+
+<!-- security schemes -->
+{% if securitySchemes %}
+<nav class="nav-section">
+	<h2 class="nav-section__title"><a href="#security-schemes">Security Schemes</a></h2>
+	<ul class="nav-tree">
+		{% for secSchemeKey, secScheme in securitySchemes %}
+			{{ navFinalItem("#security-schemes:" + secSchemeKey, secScheme.displayName, 0) }}
+		{% endfor %}
+	</ul>
+</nav>
+{% endif %}
+
+<!-- types -->
+{% if types %}
+<nav class="nav-section">
+	<h2 class="nav-section__title"><a href="#types">Types</a></h2>
+	<ul class="nav-tree">
+		{% for typeKey, type in types %}
+			{{ navFinalItem("#type:" + typeKey, type.displayName, 0) }}
+		{% endfor %}
+	</ul>
+</nav>
+{% endif %}

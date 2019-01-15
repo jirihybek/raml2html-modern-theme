@@ -1,0 +1,270 @@
+{% for method in resource.methods %}
+	{% set resourceAnchor = "resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method %}
+
+    {% set reqPermissions = [] %}
+    {% set methodTags = [] %}
+
+    {% for item in method.annotations %}
+		{% if item.key == "permissions" %}
+        	{% set reqPermissions = reqPermissions.concat(item.structuredValue) %}
+		{% elif item.key == "deprecated" %}
+        	{% set methodTags = methodTags.concat([{ "label": "Deprecated", "style": "bluegray", "icon": "delete_forever" }]) %}
+		{% elif item.key == "notImplemented" %}
+        	{% set methodTags = methodTags.concat([{ "label": "Not implemented", "style": "orange", "icon": "highlight_off" }]) %}
+		{% elif item.key == "experimental" %}
+        	{% set methodTags = methodTags.concat([{ "label": "Experimental", "style": "purple", "icon": "error_outline" }]) %}
+		{% elif item.key == "breakingChange" %}
+        	{% set methodTags = methodTags.concat([{ "label": "Breaking Change", "style": "orange", "icon": "warning" }]) %}
+	  	{% else %}
+		  	{% set methodTags = methodTags.concat([{ "label": item.key, "style": "" }]) %}
+      	{% endif %}
+    {% endfor %}
+
+	<article class="record record--resource record--method-{{ method.method }}" id="{{ resourceAnchor }}">
+		<header class="record__header section">
+			<h3 class="record__header__title section__content">
+				<span class="record__header__method">{{ method.method }}</span>
+				<span class="record__header__label">
+					<span class="record__header__name"><span class="record__header__parent-url">{{ resource.parentUrl }}</span><span class="record__header__rel-uri">{{ resource.relativeUri }}</span></span>
+				</span>
+			</h3>
+			<div class="section__sidecode section__sidecode--heading">
+
+				<span class="record__header__altname">{% if method.displayName %}{{ method.displayName }}{% endif %}</span>
+
+				<span class="record__header__flags">
+					<!-- tags? -->
+					{% if methodTags.length %}
+						{% for tag in methodTags %}
+							{% if tag.icon %}<i title="{{ tag.label }}" class="material-icons">{{ tag.icon }}</i>{% endif %}
+						{% endfor %}
+					{% endif %}
+					&nbsp;
+					<!-- secured? -->
+					{% if method.securedBy.length or reqPermissions.length %}
+						{% if method.securedBy.length %}<i title="Authenticated" class="material-icons">lock</i>{% endif %}
+						{% if reqPermissions.length %}<i title="Authorized" class="material-icons">vpn_key</i>{% endif %}
+					{% endif %}
+				</span>
+
+			</div>
+		</header>
+
+		<section class="record__content">
+
+			<!-- Common -->
+			{% if method.description or reqPermissions.length or method.allUriParameters.length or method.queryParameters or method.headers or method.securedBy.length or method.annotations.length %}
+			<div class="section-group section-group--separated">
+				<div class="section">
+					<div class="section__content container container--inner">
+
+						{% if method.description or methodTags.length or reqPermissions.length %}
+						<div class="content-group">
+							{% if method.description %}
+							<div class="rtc {% if not methodTags.length and not reqPermissions.length %}rtc--final{% endif %}">
+								{% markdown %}
+								{{ method.description}}
+								{% endmarkdown %}
+							</div>
+							{% endif %}
+
+							<!-- tags? -->
+							{% if methodTags.length %}
+							<div class="record__tags">
+								{% for tag in methodTags %}
+								<span class="record__tags__item record__tags__item--{{tag.style}}">{{ tag.label }}</span>
+								{% endfor %}
+							</div>
+							{% endif %}
+
+							{% if reqPermissions.length %}
+							<div class="highlight-block rtc rtc--final">
+								<p>
+									<i title="Authorized" class="material-icons">vpn_key</i>
+									<strong>Required permissions</strong>
+								</p>
+								<p>
+								{% for permission in reqPermissions %}
+									<code>{{ permission }}</code>
+								{% endfor %}
+								</p>
+							</div>
+							{% endif %}
+						</div>
+						{% endif %}
+
+						<!-- Params -->
+						{% if method.allUriParameters.length or method.queryParameters %}
+						<div class="content-group" id="{{ resourceAnchor }}:params">
+							<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ resourceAnchor }}:params">
+								<span class="content-group__title__label">Parameters</span>
+								{{ partials.collapsibleArrows() }}
+							</h3>
+							<table class="table collapsible__el">
+								{{ partials.paramsHeader() }}
+								{% if method.allUriParameters.length %}
+									{{ partials.paramsHeading("Path") }}
+									{{ partials.paramsBody(method.allUriParameters, types) }}
+								{% endif %}
+								{% if method.queryParameters %}
+									{{ partials.paramsHeading("Query") }}
+									{{ partials.paramsBody(method.queryParameters, types) }}
+								{% endif %}
+							</table>
+						</div>
+						{% endif %}
+
+						<!-- Headers -->
+						{% if method.headers.length %}
+						<div class="content-group collapsible--collapsed" id="{{ resourceAnchor }}:headers">
+							<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ resourceAnchor }}:headers">
+								<span class="content-group__title__label">Headers</span>
+								{{ partials.collapsibleArrows() }}
+							</h3>
+							<table class="table collapsible__el">
+								{{ partials.paramsHeader() }}
+								{{ partials.paramsBody(method.headers, types) }}
+							</table>
+						</div>
+						{% endif %}
+
+						<!-- Security -->
+						{% if method.securedBy.length %}
+						<div class="content-group collapsible--collapsed" id="{{ resourceAnchor }}:secured-by">
+							<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ resourceAnchor }}:secured-by">
+								<span class="content-group__title__label">Secured By</span>
+								{{ partials.collapsibleArrows() }}
+							</h3>
+							<div class="type-table collapsible__el">
+								{% for securedBy in method.securedBy %}
+									{% set secScheme = securitySchemes[securedBy.schemeName] %}
+									<div class="record__secured-by">
+										<h4 class="record__secured-by__title">
+											<a href="#security-schemes:{{secScheme.name}}">
+												<span class="record__secured-by__title__display-name">{{ secScheme.displayName }}</span>
+												<span class="record__secured-by__title__name">{{ secScheme.name }}</span>
+											</a>
+										</h4>
+
+										{% if secScheme.description %}
+										<div class=" record__secured-by__description rtc rtc--final">
+											{% markdown %}
+											{{ secScheme.description }}
+											{% endmarkdown %}
+										</div>
+										{% endif %}
+
+										{% if securedBy.scopes %}
+										<h5 class="record__secured-by__scopes-title">Scopes:</h5>
+										
+										<ul class="record__secured-by__scopes-list structured-value structured-value--array">
+											{% for scope in securedBy.scopes %}
+												<li class="structured-value__array-item">
+													<span class="structured-value structured-value--value">{{scope}}</span>
+												</li>
+											{% endfor %}
+										</ul>
+										{% endif %}
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+						{% endif %}
+
+						<!-- Annotations -->
+						{% if method.annotations.length %}
+						<div class="content-group collapsible--collapsed" id="{{ resourceAnchor }}:annotations">
+							<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ resourceAnchor }}:annotations">
+								<span class="content-group__title__label">Annotations</span>
+								{{ partials.collapsibleArrows() }}
+							</h3>
+							<ul class="record__annotations collapsible__el">
+								{% for item in method.annotations %}
+									<li class="record__annotations__item">
+										<h3 class="record__annotations__label">
+											{% if annotationTypes[item.key].displayName %}{{ annotationTypes[item.key].displayName }}{% else %}{{ item.name }}{% endif %}{% if item.structuredValue %}:{% endif %}
+										</h3>
+										{% if item.structuredValue %}
+											{{ partials.structuredValue(item.structuredValue) }}
+										{% endif %}
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+						{% endif %}
+						
+					</div>
+					<div class="section__sidecode">
+						<!--<pre class="container--inner code-example"><code>{{ method | dump("  ") }}</code></pre>-->
+						<pre class="container container--inner code-example"><code class="hljs bash">{{ partials.curlCommand(resource, method, baseUri) | trim }}</code></pre>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+			
+			<!-- Request body -->
+			{% if method.body and method.body.length > 0 %}
+				<div class="section-group section-group--separated" id="{{ resourceAnchor }}:request-body">
+					<div class="section section-group__header">
+						<div class="section__content container--inner">
+							<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ resourceAnchor }}:request-body">
+								<span class="content-group__title__label">Request Body</span>
+								{{ partials.collapsibleArrows() }}
+							</h3>
+						</div>
+						<div class="section__sidecode"></div>
+					</div>
+					<div class="section-group__content collapsible__el record__request-body">
+						{% for contentType in method.body %}
+							{{ partials.typeSection(contentType, resourceAnchor, "Request Body", types) }}
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
+
+			<!-- Responses -->
+			{% if method.responses and method.responses.length > 0 %}
+				{% for response in method.responses %}
+					<div class="section-group section-group--separated record__response {% if response.code < 200 or response.code >= 300 %}collapsible--collapsed{% endif %}" id="{{ resourceAnchor }}:response-{{ response.code }}">
+						<div class="section section-group__header">
+							<div class="section__content container--inner">
+								<h3 class="content-group__title content-group__title--sticky collapsible__toggler collapsible__head" data-target="{{ resourceAnchor }}:response-{{ response.code }}">
+									<span class="content-group__title__label">{{ helpers.httpCodeLabel(response.code) | trim }}</span>
+									{{ partials.collapsibleArrows() }}
+								</h3>
+								<div class="content-group__description rtc rtc--final content-group__description--last collapsible__el">
+									{% markdown %}
+									{{ response.description }}
+									{% endmarkdown %}
+								</div>
+
+								<div class="collapsible__el">
+								{% if response.headers and response.headers.length %}
+									<h4 class="content-group__subtitle">Headers</h4>
+									<table class="table">
+										{{ partials.paramsHeader() }}
+										{{ partials.paramsBody(response.headers) }}
+									</table>
+								{% endif %}
+								</div>
+							</div>
+							<div class="section__sidecode"></div>
+						</div>
+
+						{% if response.body and response.body.length > 0 %}
+						<div class="section-group__content collapsible__el">
+							{% for contentType in response.body %}
+								{{ partials.typeSection(contentType, resourceAnchor, "Response Body", types) }}
+							{% endfor %}
+						</div>
+						{% endif %}
+					</div>
+				{% endfor %}
+			{% endif %}
+
+		</section>
+	</article>
+{% endfor %}
+{% for resource in resource.resources %}
+	{% include "./resource.nunjucks" %}
+{% endfor %}

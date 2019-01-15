@@ -1,0 +1,76 @@
+{% set typeAnchor = "type:" + typeKey %}
+
+<article class="record record--type" id="{{ typeAnchor }}">
+	<header class="record__header section">
+		<h3 class="record__header__title section__content">
+			<span class="record__header__method">Type</span>
+			<span class="record__header__label">
+				<span class="record__header__name">{{ type.name }}</span>
+				({{ type.type }})
+			</span>
+		</h3>
+		<div class="section__sidecode section__sidecode--heading">
+			<span class="record__header__altname">{% if type.displayName %}{{ type.displayName }}{% endif %}</span>
+		</div>
+	</header>
+
+	<section class="record__content">
+
+		<!-- Common -->
+		<div class="section-group section-group--separated">
+			<div class="section">
+				<div class="section__content container container--inner">
+
+					<!-- <pre><code>{{ type | dump }}</code></pre> -->
+
+					<!-- Description -->
+					<div class="content-group property property--fixed-key property--standalone">
+						<div class="property__info">
+							{{ partials.propertyInfo(type, types) }}
+						</div>
+					</div>
+
+					<!-- Annotations -->
+					{% if type.annotations.length %}
+					<div class="content-group collapsible--collapsed" id="{{ typeAnchor }}:annotations">
+						<h3 class="content-group__title collapsible__toggler collapsible__head" data-target="{{ typeAnchor }}:annotations">
+							<span class="content-group__title__label">Annotations</span>
+							{{ partials.collapsibleArrows() }}
+						</h3>
+						<ul class="record__annotations collapsible__el">
+							{% for item in type.annotations %}
+								<li class="record__annotations__item">
+									<h3 class="record__annotations__label">
+										{% if annotationTypes[item.key].displayName %}{{ annotationTypes[item.key].displayName }}{% else %}{{ item.name }}{% endif %}{% if item.structuredValue %}:{% endif %}
+									</h3>
+									{% if item.structuredValue %}
+										{{ partials.structuredValue(item.structuredValue) }}
+									{% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+					{% endif %}
+
+					<!-- Model -->
+					{% if type.properties or type.items or type.anyOf %}
+					<div class="content-group">
+						<h3 class="content-group__title">
+							<span class="content-group__title__label">Model</span>
+						</h3>
+						<table class="table record__model">
+							{{ partials.paramsHeader() }}
+							{{ partials.typeBody(type, types) }}
+						</table>
+					</div>
+					{% endif %}
+					
+				</div>
+				<div class="section__sidecode">
+					{{ partials.paramsSidecode(type, typeAnchor, "Examples") }}
+				</div>
+			</div>
+		</div>
+
+	</section>
+</article>
