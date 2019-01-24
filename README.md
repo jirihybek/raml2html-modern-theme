@@ -91,21 +91,48 @@ permissions:
 
 Applicable to a method. If used the special `Required permissions` block is displayed in a method description which enumarates specified items.
 
-### permissions
+### docMenu
 
 ```yaml
 # Definition
-expandMenu:
-  displayName: Expand Menu
-  description: The current resource should be expanded in the menu.
+docMenu:
+  displayName: Documentation Menu
+  description: Configuration of the menu behaviour.
   allowedTargets: [ Resource ]
-  type: nil
+  type: object
+  properties:
+    expand:
+      type: boolean
+      description: If the current resource should be expanded in the menu.
+      required: false
+    root:
+      type: boolean
+      description: If the current resource should be at root level.
+      required: false
 
 # Usage
-(expandMenu):
+(docMenu):
+  expand: true
+  root: true
 ```
 
-Applicable to a resource. When used the resource will be expanded in the menu.
+Applicable to a resource. When `expand` is true the resource will be expanded in the menu. When `root` is true the resource will be rendered at root level no matter what.
+
+### docCategory
+
+```yaml
+# Definition
+docCategory:
+  displayName: Documentation Category
+  description: Name of the category the current item should belong to.
+  allowedTargets: [ TypeDeclaration ]
+  type: string
+
+# Usage
+(docCategory): Errors
+```
+
+Applicable to a type declaration. If used the type will be rendered in the menu under given category.
 
 ## License
 

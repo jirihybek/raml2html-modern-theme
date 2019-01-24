@@ -16,33 +16,84 @@
 
 {% macro navResource(resource, level) %}
 	{% set expand = false %}
+	{% set skip = false %}
     {% for item in resource.annotations %}
-		{% if item.key == "expandMenu" %}
+		{% if item.key == "docMenu" and item.structuredValue.expand == true %}
         	{% set expand = true %}
+		{% endif %}
+		{% if item.key == "docMenu" and item.structuredValue.root == true %}
+			{% set skip = true %}
       	{% endif %}
     {% endfor %}
 
-	<li class="nav-tree__item nav-tree__item--level-{{ level }} {% if not expand %}nav-tree__item--collapsed{% endif %}">
-		{{ navGroupItem(resource.displayName) }}
-		{% if resource.methods.length or resource.resources.length %}
-		<ul class="nav-tree">
-			{% if resource.methods.length %}
-				{% for method in resource.methods %}
-					{% if method.displayName %}
-						{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.displayName, level + 1, "method-" + method.method) }}
-					{% else %}
-						{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.method | upper, level + 1, "method-" + method.method) }}
-					{% endif %}
-				{% endfor %}
-			{% endif %}
+	{% if skip == false or level == 1 %}
+		<li class="nav-tree__item nav-tree__item--level-{{ level }} {% if not expand %}nav-tree__item--collapsed{% endif %}">
+			{{ navGroupItem(resource.displayName) }}
+			{% if resource.methods.length or resource.resources.length %}
+			<ul class="nav-tree">
+				{% if resource.methods.length %}
+					{% for method in resource.methods %}
+						{% if method.displayName %}
+							{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.displayName, level + 1, "method-" + method.method) }}
+						{% else %}
+							{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.method | upper, level + 1, "method-" + method.method) }}
+						{% endif %}
+					{% endfor %}
+				{% endif %}
 
-			{% if resource.resources.length %}
-				{% for subResource in resource.resources %}
-					{{ navResource(subResource, level + 1) }}
-				{% endfor %}
+				{% if resource.resources.length %}
+					{% for subResource in resource.resources %}
+						{{ navResource(subResource, level + 1) }}
+					{% endfor %}
+				{% endif %}
+			</ul>
 			{% endif %}
-		</ul>
+		</li>
+	{% endif %}
+{% endmacro %}
+
+{% macro navResourceTreeRoot(resources, level) %}
+
+	{% for resource in resources %}
+		{% set isRoot = ( true if level == 1 else false ) %}
+		{% for item in resource.annotations %}
+			{% if item.key == "docMenu" and item.structuredValue.root == true %}
+				{% set isRoot = true %}
+			{% endif %}
+		{% endfor %}
+
+		{% if isRoot %}
+			{{ navResource(resource, 1) }}
 		{% endif %}
+		{% if resource.resources.length %}
+			{{ navResourceTreeRoot(resource.resources, level + 1) }}
+		{% endif %}
+	{% endfor %}
+
+{% endmacro %}
+
+{% macro typeCategory(categoryName, types) %}
+	<li class="nav-tree__item nav-tree__item--level-1">
+		{{ navGroupItem(categoryName) }}
+		<ul class="nav-tree">
+			{% for typeKey, type in types %}
+
+				{% if type.annotations.length %}
+					{% for item in type.annotations %}
+						{% if item.name == "docCategory" and item.structuredValue == categoryName %}
+							{{ navFinalItem("#type:" + typeKey, type.displayName, 2) }}
+						{% endif %}
+					{% endfor %}
+				{% else %}
+					{% for annotKey, item in type.annotations %}
+						{% if item.name == "docCategory" and item.structuredValue == categoryName %}
+							{{ navFinalItem("#type:" + typeKey, type.displayName, 2) }}
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+
+			{% endfor %}
+		</ul>
 	</li>
 {% endmacro %}
 
@@ -62,9 +113,7 @@
 <nav class="nav-section">
 	<h2 class="nav-section__title"><a href="#resources">Resources</a></h2>
 	<ul class="nav-tree">
-		{% for resource in resources %}
-			{{ navResource(resource, 1) }}
-		{% endfor %}
+		{{ navResourceTreeRoot(resources, 1) }}
 	</ul>
 </nav>
 
@@ -85,8 +134,39 @@
 <nav class="nav-section">
 	<h2 class="nav-section__title"><a href="#types">Types</a></h2>
 	<ul class="nav-tree">
+		{% set categories = [] %}
+		
 		{% for typeKey, type in types %}
-			{{ navFinalItem("#type:" + typeKey, type.displayName, 0) }}
+			{% set hasCategory = false %}
+
+			{% if type.annotations.length %}
+				{% for item in type.annotations %}
+					{% if item.name == "docCategory" %}
+						{% if categories.indexOf(item.structuredValue | trim) < 0 %}
+							{% set categories = categories.concat([ item.structuredValue | trim ]) %}
+						{% endif %}
+						{% set hasCategory = true %}
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				{% for annotKey, item in type.annotations %}
+					{% if item.name == "docCategory" %}
+						{% if categories.indexOf(item.structuredValue | trim) < 0 %}
+							{% set categories = categories.concat([ item.structuredValue | trim ]) %}
+						{% endif %}
+						{% set hasCategory = true %}
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+
+			{% if hasCategory == false %}
+				{{ navFinalItem("#type:" + typeKey, type.displayName, 0) }}
+			{% endif %}
+
+		{% endfor %}
+
+		{% for catName in categories %}
+			{{ typeCategory(catName, types) }}
 		{% endfor %}
 	</ul>
 </nav>
