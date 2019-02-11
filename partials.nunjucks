@@ -152,7 +152,20 @@
 		</div>
 	{% endif %}
 
-	{% if prop.originalType %}
+  {% if prop.rawType and prop.rawType.type %}
+		<p class="property__attr">
+			<span class="property__attr__label">Inherits:</span>
+			<span class="property__attr__val">
+        {% for originalType in prop.rawType.type %}
+          {% if typesRegistry[originalType] %}
+            <a href="#type:{{ originalType }}">{{ originalType }}</a>
+          {% else %}
+            {{ originalType }}
+          {% endif %}
+        {% endfor %}
+			</span>
+		</p>
+	{% elif prop.originalType %}
 		<p class="property__attr">
 			<span class="property__attr__label">Inherits:</span>
 			<span class="property__attr__val">
@@ -167,13 +180,18 @@
 {% endmacro %}
 
 {% macro paramsProperty(key, prop, prefix, isArrayItem, typesRegistry) %}
-	<!-- <tr><td colspan="3"><pre><code>{{prefix}}: {{ prop | dump }}</code></pre></td></tr> -->
+  {% set propKey = prop.key if prop.key else prop.name %}
 	<tr class="property">
 
 		<th class="table__col--name">
-			<span class="property__prefix">{{ prefix }}</span><span class="property__name">{%- if isArrayItem -%}[]{%- else -%}{{ prop.name }}{%- endif -%}</span>
+			<span class="property__prefix">{{ prefix }}</span><span class="property__name">{%- if isArrayItem -%}[]{%- else -%}{{ propKey }}{%- endif -%}</span>
 			{%- if prop.required -%}<span class="property__required">*</span>{%- endif -%}
-			{% if prop.displayName and prop.displayName !== prop.name %}<span class="property__display-name">{{ prop.displayName }}</span>{% endif %}
+
+      {% if prop.rawType and prop.rawType.type and typesRegistry[prop.rawType.name] %}
+        <span class="property__display-name"><a href="#type:{{ prop.rawType.name }}">{{ prop.displayName if prop.displayName else prop.rawType.name }}</a></span>
+      {% elif prop.displayName and prop.displayName !== propKey %}
+        <span class="property__display-name">{{ prop.displayName }}</span>
+      {% endif %}
 		</th>
 		<td class="table__col--type">{{ prop.type }}</td>
 		<td class="table__col--description property__info">
@@ -181,7 +199,7 @@
 		</td>
 	</tr>
 
-	{{ typeProperties(prop, prefix + ( "[]" if isArrayItem else prop.name ), ".", typesRegistry) }}
+	{{ typeProperties(prop, prefix + ( "[]" if isArrayItem else propKey ), ".", typesRegistry) }}
 {% endmacro %}
 
 {% macro typeProperties(type, prefix, suffix, typesRegistry) %}

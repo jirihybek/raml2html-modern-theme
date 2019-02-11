@@ -72,6 +72,22 @@ breakingChange:
 
 Applicable to a method. If used the `Breaking Change` tag is displayed in the method description and also an icon in a method header.
 
+### proposal
+
+```yaml
+# Definition
+proposal:
+  displayName: Proposal
+  description: This method is a proposal.
+  allowedTargets: [ Method ]
+  type: nil
+
+# Usage
+(proposal):
+```
+
+Applicable to a method. If used the `Proposal` tag is displayed in the method description and also an icon in a method header.
+
 ### permissions
 
 ```yaml

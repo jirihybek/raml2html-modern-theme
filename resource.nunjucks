@@ -15,6 +15,8 @@
         	{% set methodTags = methodTags.concat([{ "label": "Experimental", "style": "purple", "icon": "error_outline" }]) %}
 		{% elif item.key == "breakingChange" %}
         	{% set methodTags = methodTags.concat([{ "label": "Breaking Change", "style": "orange", "icon": "warning" }]) %}
+		{% elif item.key == "proposal" %}
+        	{% set methodTags = methodTags.concat([{ "label": "Proposal", "style": "pink", "icon": "stars" }]) %}
 	  	{% else %}
 		  	{% set methodTags = methodTags.concat([{ "label": item.key, "style": "" }]) %}
       	{% endif %}
