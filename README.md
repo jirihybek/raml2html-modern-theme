@@ -4,7 +4,9 @@ Modern theme for raml2html utility.
 
 Theme displays navigation tree on the left, documentation in the middle and type + curl examples on the right.
 
-![Screenshot](https://github.com/jirihybek/raml2html-modern-theme/raw/master/screenshot.jpg)
+![Screenshot 1](https://github.com/jirihybek/raml2html-modern-theme/raw/master/screenshot1.jpg)
+![Screenshot 2](https://github.com/jirihybek/raml2html-modern-theme/raw/master/screenshot2.jpg)
+![Screenshot 3](https://github.com/jirihybek/raml2html-modern-theme/raw/master/screenshot3.jpg)
 
 ## Custom Annotations
 
