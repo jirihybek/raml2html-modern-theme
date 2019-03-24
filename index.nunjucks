@@ -1,6 +1,6 @@
 {% import "partials.nunjucks" as partials %}
 {% import "helpers.nunjucks" as helpers %}
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>{{ title }} - API documentation</title>

@@ -1,6 +1,6 @@
 {
   "name": "raml2html-modern-theme",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Modern theme for raml2html utility.",
   "main": "index.js",
   "scripts": {
