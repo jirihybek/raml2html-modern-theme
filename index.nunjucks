@@ -53,7 +53,9 @@
 						<h1 class="rtc__title">{{ title }} <span class="version">v{{ version }}</span></h1>
 
 						{% if description %}
-						<p class="rtc__description">{{ description }}</p>
+						<div class="rtc__description">
+							{% markdown %} {{ description }} {% endmarkdown %}
+						</div>
 						{% endif %}
 
 						<p class="rtc__base-uri">
