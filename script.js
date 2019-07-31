@@ -107,10 +107,43 @@ function bindTabs() {
 
 }
 
+function bindFilters() {
+
+	function updateFilter(el) {
+
+		if (el.checked) {
+			document.body.classList.remove("annot-hide-" + el.getAttribute("data-annotation"));
+			localStorage["raml2html_filters_" + el.getAttribute("data-annotation")] = "1";
+		} else {
+			document.body.classList.add("annot-hide-" + el.getAttribute("data-annotation"));
+			localStorage["raml2html_filters_" + el.getAttribute("data-annotation")] = "0";
+		}
+
+	}
+
+	function bindFilterOption(el) {
+
+		el.addEventListener("change", () => updateFilter(el));
+
+		if (localStorage["raml2html_filters_" + el.getAttribute("data-annotation")] == "0") {
+			el.checked = false;
+			updateFilter(el);
+		}
+
+	}
+
+	var filterOptEls = document.querySelectorAll(".nav-tree__filter-checkbox");
+
+	for (var i = 0; i < filterOptEls.length; i++)
+		bindFilterOption( filterOptEls.item(i) );
+
+}
+
 window.addEventListener("load", function() {
 
 	bindNavToggle();
 	bindCollapsibles();
 	bindTabs();
+	bindFilters();
 
 });

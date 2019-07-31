@@ -33,10 +33,26 @@
 			<ul class="nav-tree">
 				{% if resource.methods.length %}
 					{% for method in resource.methods %}
+						{% set methodAnnotations = [] %}
+
+						{% for item in method.annotations %}
+							{% if item.key == "deprecated" %}
+								{% set methodAnnotations = methodAnnotations.concat(["annot-deprecated"]) %}
+							{% elif item.key == "notImplemented" %}
+								{% set methodAnnotations = methodAnnotations.concat(["annot-notImplemented"]) %}
+							{% elif item.key == "experimental" %}
+								{% set methodAnnotations = methodAnnotations.concat(["annot-experimental"]) %}
+							{% elif item.key == "breakingChange" %}
+								{% set methodAnnotations = methodAnnotations.concat(["annot-breakingChange"]) %}
+							{% elif item.key == "proposal" %}
+								{% set methodAnnotations = methodAnnotations.concat(["annot-proposal"]) %}
+							{% endif %}
+						{% endfor %}
+
 						{% if method.displayName %}
-							{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.displayName, level + 1, "method-" + method.method) }}
+							{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.displayName, level + 1, "method-" + method.method + " " + methodAnnotations.join(" ")) }}
 						{% else %}
-							{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.method | upper, level + 1, "method-" + method.method) }}
+							{{ navFinalItem("#resources:" + resource.parentUrl + resource.relativeUri + ":" + method.method, method.method | upper, level + 1, "method-" + method.method + " " + methodAnnotations.join(" ")) }}
 						{% endif %}
 					{% endfor %}
 				{% endif %}
@@ -171,3 +187,40 @@
 	</ul>
 </nav>
 {% endif %}
+
+<!-- filters -->
+<nav class="nav-section">
+	<h2 class="nav-section__title">Filters</h2>
+	<ul class="nav-tree">
+		<li class="nav-tree__item nav-tree__item--final nav-tree__item--level-0 nav-tree__item--filter">
+			<label>
+				<input type="checkbox" class="nav-tree__filter-checkbox" data-annotation="deprecated" checked="checked" />
+				<span class="label">Deprecated</span>
+			</label>
+		</li>
+		<li class="nav-tree__item nav-tree__item--final nav-tree__item--level-0 nav-tree__item--filter">
+			<label>
+				<input type="checkbox" class="nav-tree__filter-checkbox" data-annotation="notImplemented" checked="checked" />
+				<span class="label">Not Implemented</span>
+			</label>
+		</li>
+		<li class="nav-tree__item nav-tree__item--final nav-tree__item--level-0 nav-tree__item--filter">
+			<label>
+				<input type="checkbox" class="nav-tree__filter-checkbox" data-annotation="experimental" checked="checked" />
+				<span class="label">Experimental</span>
+			</label>
+		</li>
+		<li class="nav-tree__item nav-tree__item--final nav-tree__item--level-0 nav-tree__item--filter">
+			<label>
+				<input type="checkbox" class="nav-tree__filter-checkbox" data-annotation="breakingChange" checked="checked" />
+				<span class="label">Breaking Change</span>
+			</label>
+		</li>
+		<li class="nav-tree__item nav-tree__item--final nav-tree__item--level-0 nav-tree__item--filter">
+			<label>
+				<input type="checkbox" class="nav-tree__filter-checkbox" data-annotation="proposal" checked="checked" />
+				<span class="label">Proposal</span>
+			</label>
+		</li>
+	</ul>
+</nav>

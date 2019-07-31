@@ -209,6 +209,21 @@ a:hover {
 	&__item--collapsed & {
 		display: none;
 	}
+
+	&__item--filter {
+		padding: 6px 25px;
+		margin-bottom: 1px;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	&__filter-checkbox {
+		vertical-align: 1px;
+	}
 }
 
 .nav-section > .nav-tree {
@@ -236,14 +251,19 @@ a:hover {
 	flex-wrap: nowrap;
 
 	&__content {
-		flex-grow: 1;
+		// flex-grow: 1;
+		flex-shrink: 0;
+		width: 55%;
+		max-width: 800px;
 	}
 
 	&__sidecode {
 		background: #50555b;
-		width: 380px;
+		// width: 380px;
+		min-width: 380px;
 		box-sizing: border-box;
-		flex-shrink: 0;
+		flex-grow: 1;
+		// flex-shrink: 1;
 
 		&--heading {
 			background: #575c63;
@@ -1279,3 +1299,18 @@ a:hover {
 	}
 
 }
+
+/*
+ * Filters
+ */
+.annot-deprecated { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+.annot-notImplemente { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+.annot-experimental { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+.annot-breakingChange { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+.annot-proposal { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+
+body:not(.annot-hide-deprecated) .annot-deprecated { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
+body:not(.annot-hide-notImplemented) .annot-notImplemented { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
+body:not(.annot-hide-experimental) .annot-experimental { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
+body:not(.annot-hide-breakingChange) .annot-breakingChange { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
+body:not(.annot-hide-proposal) .annot-proposal { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }

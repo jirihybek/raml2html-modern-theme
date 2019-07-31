@@ -1,5 +1,10 @@
 {% import "partials.nunjucks" as partials %}
 {% import "helpers.nunjucks" as helpers %}
+{% set annotationSetDeprecated = false %}
+{% set annotationSetNotImplemented = false %}
+{% set annotationSetExperimental = false %}
+{% set annotationSetBreakingChange = false %}
+{% set annotationSetProposal = false %}
 <!DOCTYPE html>
 <html>
 	<head>

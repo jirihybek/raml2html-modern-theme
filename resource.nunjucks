@@ -3,26 +3,32 @@
 
     {% set reqPermissions = [] %}
     {% set methodTags = [] %}
+	{% set methodAnnotations = [] %}
 
     {% for item in method.annotations %}
 		{% if item.key == "permissions" %}
         	{% set reqPermissions = reqPermissions.concat(item.structuredValue) %}
 		{% elif item.key == "deprecated" %}
         	{% set methodTags = methodTags.concat([{ "label": "Deprecated", "style": "bluegray", "icon": "delete_forever" }]) %}
+			{% set methodAnnotations = methodAnnotations.concat(["annot-deprecated"]) %}
 		{% elif item.key == "notImplemented" %}
         	{% set methodTags = methodTags.concat([{ "label": "Not implemented", "style": "orange", "icon": "highlight_off" }]) %}
+			{% set methodAnnotations = methodAnnotations.concat(["annot-notImplemented"]) %}
 		{% elif item.key == "experimental" %}
         	{% set methodTags = methodTags.concat([{ "label": "Experimental", "style": "purple", "icon": "error_outline" }]) %}
+			{% set methodAnnotations = methodAnnotations.concat(["annot-experimental"]) %}
 		{% elif item.key == "breakingChange" %}
         	{% set methodTags = methodTags.concat([{ "label": "Breaking Change", "style": "orange", "icon": "warning" }]) %}
+			{% set methodAnnotations = methodAnnotations.concat(["annot-breakingChange"]) %}
 		{% elif item.key == "proposal" %}
         	{% set methodTags = methodTags.concat([{ "label": "Proposal", "style": "pink", "icon": "stars" }]) %}
+			{% set methodAnnotations = methodAnnotations.concat(["annot-proposal"]) %}
 	  	{% else %}
 		  	{% set methodTags = methodTags.concat([{ "label": item.key, "style": "" }]) %}
       	{% endif %}
     {% endfor %}
 
-	<article class="record record--resource record--method-{{ method.method }}" id="{{ resourceAnchor }}">
+	<article class="record record--resource record--method-{{ method.method }}{{" " + methodAnnotations.join(" ") if methodAnnotations.length > 0 else "" }}" id="{{ resourceAnchor }}">
 		<header class="record__header section">
 			<h3 class="record__header__title section__content">
 				<span class="record__header__method">{{ method.method }}</span>
