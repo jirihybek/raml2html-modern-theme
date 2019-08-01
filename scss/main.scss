@@ -222,7 +222,10 @@ a:hover {
 	}
 
 	&__filter-checkbox {
-		vertical-align: 1px;
+		vertical-align: -2px;
+		margin-right: 2px;
+		width: 18px;
+		height: 18px;
 	}
 }
 
@@ -1303,6 +1306,7 @@ a:hover {
 /*
  * Filters
  */
+/*
 .annot-deprecated { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
 .annot-notImplemented { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
 .annot-experimental { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
@@ -1314,3 +1318,10 @@ body:not(.annot-hide-notImplemented) .annot-notImplemented { .record__content { 
 body:not(.annot-hide-experimental) .annot-experimental { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
 body:not(.annot-hide-breakingChange) .annot-breakingChange { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
 body:not(.annot-hide-proposal) .annot-proposal { .record__content { display: block; } .record__header__title { opacity: 1.0; filter: none; } .record__header .section__sidecode { color: #ffffff; } .nav-tree__item__label { opacity: 1.0; filter: none; } }
+*/
+
+body.annot-hide-deprecated .annot-deprecated { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+body.annot-hide-notImplemented .annot-notImplemented { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+body.annot-hide-experimental .annot-experimental { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+body.annot-hide-breakingChange .annot-breakingChange { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }
+body.annot-hide-proposal .annot-proposal { .record__content { display: none; } .record__header__title { opacity: 0.5; filter: saturate(0); } .record__header .section__sidecode { color: #6c727b; } .nav-tree__item__label { opacity: 0.5; filter: saturate(0); } }

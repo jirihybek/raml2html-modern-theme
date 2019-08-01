@@ -89,7 +89,7 @@
 {% endmacro %}
 
 {% macro typeCategory(categoryName, types) %}
-	<li class="nav-tree__item nav-tree__item--level-1">
+	<li class="nav-tree__item nav-tree__item--level-1 nav-tree__item--collapsed">
 		{{ navGroupItem(categoryName) }}
 		<ul class="nav-tree">
 			{% for typeKey, type in types %}
